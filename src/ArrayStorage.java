@@ -15,8 +15,7 @@ public class ArrayStorage {
     }
 
     Resume get(String uuid) {
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] == null) break;
+        for (int i = 0; i < size(); i++) {
             if (storage[i].uuid == uuid) {
                 return storage[i];
             }
@@ -25,21 +24,18 @@ public class ArrayStorage {
     }
 
     void delete(String uuid) {
-        int index = -1;
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] == null) break;
-            if (storage[i].uuid == uuid) index = i;
+        int siz = size();
+        for (int i = 0; i < size(); i++) {
+            if (storage[i].uuid == uuid) {
+                for (int j = i; j <= size(); j++) {
+                    storage[j] = storage[j+1];
+                }
+            }
         }
-        if (index == -1) {
-            System.out.println("Resume not found");
+        if (siz == size()) {
+            System.out.println("Resume item with uuid " + uuid +" not found");
             return;
         }
-        if (storage[index + 1] != null) {
-            storage[index] = storage[index + 1];
-            storage[index + 1] = null;
-            return;
-        }
-        storage[index] = null;
     }
 
     /**
@@ -48,7 +44,9 @@ public class ArrayStorage {
     Resume[] getAll() {
         int len = 0;
         for (int i = 0; i < storage.length; i++) {
-            if (storage[i] == null) break;
+            if (storage[i] == null) {
+                break;
+            }
             len++;
         }
         Resume[] resumes = new Resume[len];
@@ -57,6 +55,14 @@ public class ArrayStorage {
     }
 
     int size() {
-        return storage.length;
+        int siz = 0;
+        for (Resume r : storage) {
+            if (r == null) {
+                break;
+            }
+            siz++;
+        }
+        ;
+        return siz;
     }
 }
