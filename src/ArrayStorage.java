@@ -6,12 +6,20 @@ import static java.util.stream.IntStream.range;
 public class ArrayStorage {
     Resume[] storage = new Resume[10000];
 
+    private int size;
+
     void clear() {
-        range(0, storage.length).forEach(i -> storage[i] = null);
+        range(0, size).forEach(i -> storage[i] = null);
+        size = 0;
     }
 
     void save(Resume r) {
-        range(0, storage.length).filter(i -> storage[i] == null).findFirst().ifPresent(i -> storage[i] = r);
+        if (size < storage.length) {
+            storage[size] = r;
+            size++;
+        } else {
+            storage[size - 1] = r;
+        }
     }
 
     Resume get(String uuid) {
@@ -24,16 +32,18 @@ public class ArrayStorage {
     }
 
     void delete(String uuid) {
-        int siz = size();
-        for (int i = 0; i < size(); i++) {
+        int siz = size;
+        for (int i = 0; i < size; i++) {
             if (storage[i].uuid == uuid) {
-                for (int j = i; j <= size(); j++) {
-                    storage[j] = storage[j+1];
+                for (int j = i; j <= size; j++) {
+                    storage[j] = storage[j + 1];
                 }
+                size--;
+                break;
             }
         }
-        if (siz == size()) {
-            System.out.println("Resume item with uuid " + uuid +" not found");
+        if (siz == size) {
+            System.out.println("Resume item with uuid " + uuid + " not found");
             return;
         }
     }
@@ -42,27 +52,12 @@ public class ArrayStorage {
      * @return array, contains only Resumes in storage (without null)
      */
     Resume[] getAll() {
-        int len = 0;
-        for (int i = 0; i < storage.length; i++) {
-            if (storage[i] == null) {
-                break;
-            }
-            len++;
-        }
-        Resume[] resumes = new Resume[len];
-        System.arraycopy(storage, 0, resumes, 0, len);
+        Resume[] resumes = new Resume[size];
+        System.arraycopy(storage, 0, resumes, 0, size);
         return resumes;
     }
 
     int size() {
-        int siz = 0;
-        for (Resume r : storage) {
-            if (r == null) {
-                break;
-            }
-            siz++;
-        }
-        ;
-        return siz;
+        return size;
     }
 }
