@@ -17,8 +17,6 @@ public class ArrayStorage {
         if (size < storage.length) {
             storage[size] = r;
             size++;
-        } else {
-            storage[size - 1] = r;
         }
     }
 
@@ -32,17 +30,17 @@ public class ArrayStorage {
     }
 
     void delete(String uuid) {
-        int siz = size;
+        int initialSize = size;
         for (int i = 0; i < size; i++) {
             if (storage[i].uuid == uuid) {
-                for (int j = i; j <= size; j++) {
+                for (int j = i; j < size; j++) {
                     storage[j] = storage[j + 1];
                 }
                 size--;
                 break;
             }
         }
-        if (siz == size) {
+        if (size == initialSize) {
             System.out.println("Resume item with uuid " + uuid + " not found");
             return;
         }
